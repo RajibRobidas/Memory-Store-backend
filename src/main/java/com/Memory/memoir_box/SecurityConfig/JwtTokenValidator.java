@@ -26,9 +26,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        // String authHeader = request.getHeader("Authorization");
+        // System.out.println("Incoming request to: " + request.getRequestURI());
+        // System.out.println("Authorization header: " + authHeader);
         String authHeader = request.getHeader("Authorization");
-        System.out.println("Incoming request to: " + request.getRequestURI());
-        System.out.println("Authorization header: " + authHeader);
 
         if (request.getServletPath().equals("/") || request.getServletPath().startsWith("/auth")) {
             filterChain.doFilter(request, response);
@@ -36,14 +37,14 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Missing or invalid Authorization header");
+            // System.out.println("Missing or invalid Authorization header");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
             return;
         }
 
         try {
             String jwt = authHeader.substring(7);
-            System.out.println("JWT token: " + jwt.substring(0, Math.min(10, jwt.length())) + "..."); // Log first 10 chars
+            // System.out.println("JWT token: " + jwt.substring(0, Math.min(10, jwt.length())) + "...");
 
             // Validate JWT token
             String email = JwtProvider.getEmailFromJwtToken(jwt);
@@ -54,15 +55,15 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(email, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 
-                System.out.println("Authentication set for user: " + email);
+                // System.out.println("Authentication set for user: " + email);
                 filterChain.doFilter(request, response);
             } else {
-                System.out.println("Invalid token - no email found");
+                // System.out.println("Invalid token - no email found");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
             }
 
         } catch (Exception e) {
-            System.out.println("Token validation error: " + e.getMessage());
+            // System.out.println("Token validation error: " + e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
         }
     }
