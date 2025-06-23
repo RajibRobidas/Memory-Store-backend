@@ -30,7 +30,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         System.out.println("Incoming request to: " + request.getRequestURI());
         System.out.println("Authorization header: " + authHeader);
 
-        if (request.getServletPath().startsWith("/auth")) {
+        if (request.getServletPath().equals("/") || request.getServletPath().startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
