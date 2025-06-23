@@ -29,7 +29,7 @@ public class SecurityConfig {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/", "/auth/**").permitAll()
                         .requestMatchers("/images/**").authenticated()
                         .requestMatchers("/videos/**").authenticated()
                         .anyRequest().authenticated()
