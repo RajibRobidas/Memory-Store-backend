@@ -105,4 +105,16 @@ public class VideoController {
         if (lastDot == -1) return null;
         return videoUrl.substring(0, lastDot) + ".jpg";
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getImageById(@PathVariable String id, @RequestHeader("User-Email") String userEmail) {
+        VideoData image = videoRepository.findById(id).orElse(null);
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!image.getUserEmail().equals(userEmail)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "You can only view your own images"));
+        }
+        return ResponseEntity.ok(image);
+    }
 }
